@@ -133,7 +133,7 @@ class CutGGetter : public TObject, public BaseGetter {
       result.insert({specie.first, GetWeight(var1, var2, specie.first)});
     }
 
-    return std::map<int, double>();
+    return {};
   }
 
   void Draw(Option_t* option = "") override {
