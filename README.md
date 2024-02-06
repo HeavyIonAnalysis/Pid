@@ -35,7 +35,7 @@ Now perform following commands for the installation:
     cmake -DCMAKE_INSTALL_PREFIX=../install ../
     make -j install
 
-*path-to-root-installation* and *path-to-analysistree-installation* must be replaced with your actual location of Root and AnalysisTree install directories respectively.\
+*path-to-root-installation* and *path-to-analysistree-installation* must be replaced with your actual location of Root and AnalysisTree install directories respectively.
 
 ## Examples
 Before running the Pid framework you need to set up the environment variables:
