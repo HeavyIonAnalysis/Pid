@@ -86,14 +86,21 @@ void drawFits(TString inputFileName = "allpos.root", TString outputFileName = "f
     TList* funcList = hist->GetListOfFunctions();
     float mom = sMom.Remove(0, 2).Atof();
     cout << mom << endl;
+    TLegend* leg = new TLegend(0.2, 0.7, 0.45, 0.95);
+    leg->AddEntry(funcList->At(0), "all fit", "L");
     for (int p = 0; p < parList[0].size(); p++) {
       func[p].SetParameters(f[0][p]->Eval(mom), f[1][p]->Eval(mom), f[2][p]->Eval(mom));
       func[p].Draw("same");
       funcList->Add(func[p].Clone(Form("%s_", func[p].GetName())));
+      TString name = func[p].GetName();
+      name.Remove(name.Length() - 1);
+      leg->AddEntry(&func[p], name, "L");
     }
+    leg->Draw("same");
     c.SetTitle(sMom);
     c.Write("c_" + sMom);
     hist->Write();
+    delete leg;
   }
 
   fOut->Close();

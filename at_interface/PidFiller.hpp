@@ -37,9 +37,9 @@ class PidFiller : public AnalysisTree::Task {
   std::vector<AnalysisTree::Matching*> in_matches_{};
   std::vector<AnalysisTree::Matching*> out_matches_{};
 
-  std::string rec_tracks_name_{"VtxTracks"};
-  std::string tof_hits_name_{"TofHits"};
-  std::string out_branch_name_{"RecParticles"};
+  std::string rec_tracks_name_{"VtxTracks"};    // Branch with input tracks
+  std::string tof_hits_name_{"TofHits"};        // Branch with TOF info (m2)
+  std::string out_branch_name_{"RecParticles"}; // Output branch (based on VtxTracks) with pid info: probabilities and particle type hypothesis
 
   Pid::Getter* getter_{nullptr};
   std::vector<std::pair<long long, std::string>> pid_codes_{
