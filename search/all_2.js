@@ -4,5 +4,6 @@ var searchData=
   ['fit1d_1',['Fit1D',['../classPid_1_1Fitter.html#a54651fc5412317b40c15eaf05cd3a995',1,'Pid::Fitter']]],
   ['fitparams_2',['FitParams',['../structFitParams.html',1,'']]],
   ['fitter_3',['Fitter',['../classPid_1_1Fitter.html',1,'Pid']]],
-  ['fitter_2eh_4',['Fitter.h',['../Fitter_8h.html',1,'']]]
+  ['fitter_2eh_4',['Fitter.h',['../Fitter_8h.html',1,'']]],
+  ['framework_5',['Particle Identification Framework',['../index.html',1,'']]]
 ];
