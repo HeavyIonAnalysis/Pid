@@ -8,9 +8,15 @@ void fill_pid(const std::string& filelist, const std::string& pid_file, const st
 
   auto* man = TaskManager::GetInstance();
   man->SetOutputName(output, "aTree");
-  man->SetWriteMode(eBranchWriteMode::kCopyTree);
-  man->SetBranchesExclude({"TrdTracks", "RichRings"});
 
+  // The output file will be based on the input one with additional branches (and possibly with removed other branches)
+  man->SetWriteMode(eBranchWriteMode::kCopyTree);
+
+  // Branches TrdTracks and RichRings will be removed from the output file, since they are irrelevant for the following analysis.
+  // The branch VtxTracks, which is an input branch, will be also removed, because a new one, based on it, will be created.
+  man->SetBranchesExclude({"TrdTracks", "RichRings", "VtxTracks"});
+
+  // Initialize the Pid::Getter prepared at the fitting step: 1-st argument - file, 2-nd argument - name of the getter.
   auto* pid_task = new PidFiller(pid_file, "pid_getter");
 
   man->AddTask(pid_task);

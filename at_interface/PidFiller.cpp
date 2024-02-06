@@ -51,7 +51,7 @@ void PidFiller::Init() {
   man->AddBranch(&ana_tracks_);
 
   int i{0};
-  auto match_br = {"SimParticles", "RichRings", "TofHits", "TrdTracks"};
+  auto match_br = {"SimParticles", "TofHits"};
   out_matches_.assign(match_br.size(), nullptr);
 
   for (const auto& br : match_br) {
@@ -92,8 +92,6 @@ void PidFiller::Exec() {
 
       particle.SetValue(pid_field_, pid);
       auto prob = getter_->GetBayesianProbability(pq, m2);
-
-      particle.Print();
 
       int specie{0};
       for (const auto& pdg : pid_codes_) {

@@ -1,9 +1,8 @@
-#include <array>
-#include <chrono>
-#include <iomanip>
-#include <iostream>
-#include <random>
-#include <vector>
+#include "Constants.h"
+#include "FitHelper.h"
+#include "Fitter.h"
+#include "Getter.h"
+#include "ParticleFit.h"
 
 #include "TFile.h"
 #include "TH2.h"
@@ -11,11 +10,12 @@
 #include <TROOT.h>
 #include <TSystem.h>
 
-#include "Constants.h"
-#include "FitHelper.h"
-#include "Fitter.h"
-#include "Getter.h"
-#include "ParticleFit.h"
+#include <array>
+#include <chrono>
+#include <iomanip>
+#include <iostream>
+#include <random>
+#include <vector>
 
 void run_pid_dcm12() {
   auto start = std::chrono::system_clock::now();
@@ -24,8 +24,10 @@ void run_pid_dcm12() {
   gROOT->SetBatch(true);
   gROOT->SetEscape(true);
 
-  TString inputFileName = "/home/oleksii/cbmdir/Pid/input/m2_pq_vtx.apr20.dcmqgsm.12agev.root";
-  TString cutsFileName = "/home/oleksii/cbmdir/Pid/input/cuts.root";
+  // Set names of the input file with m2/p histograms and a file with graphic cuts.
+  TString inputFileName = "../../input/m2_pq_vtx.apr20.dcmqgsm.12agev.root";
+  TString cutsFileName = "../../input/cuts.root";
+
   std::unique_ptr<TFile> fIn{TFile::Open(inputFileName, "read")};
   std::unique_ptr<TFile> fCuts{TFile::Open(cutsFileName, "read")};
 
@@ -34,25 +36,29 @@ void run_pid_dcm12() {
   Pid::Fitter tof;
   float xmin, xmax, ymin, ymax;
 
-  //  std::shared_ptr<TH2D> hpionpos {(TH2D*) fIn->Get("reco_vs_sim_info_via_vtx/h2TofM2_piplus")};
-  //  std::shared_ptr <TH2D> hpionpos_cut {(TH2D*) cutTH2 (hpionpos, (TCutG*) fCuts->Get("piplus"))};
-  //  hpionpos_cut->Rebin2D(10,1);
-  //  Pid::ParticleFit pionpos = FitPionsPos(tof, hpionpos_cut);
+  // Fitting of positively charged particles
 
+  // As a first iteration we fit MC-true distributions of m2-p for different particles species in order
+  // to determine the main characteristics such as mean value and width of gaussian.
+
+  // Fit positively charged pions
   std::cout << "\n\npionpos\n";
-  xmin = 0.25, xmax = 10.5, ymin = -2., ymax = 2.;
-  tof.SetChi2Max(10000);
+  xmin = 0.25, xmax = 10.5, ymin = -2., ymax = 2.; // set ranges for fitting: x - p; y - m2
+  tof.SetChi2Max(10000); // set maximal chi2 of fitting to be visualized
+
+  // Set input histogram.
+  // In this task we use the reco_vs_sim_info_via_vtx folder - with "TOF hit - reconstructed track - simulated particles" matching, see ReadMe.
   std::shared_ptr<TH2D> hpionpos{(TH2D*) fIn->Get("reco_vs_sim_info_via_vtx/h2TofM2_piplus")};
-  std::shared_ptr<TH2D> hpionpos_cut{(TH2D*) cutTH2(hpionpos, (TCutG*) fCuts->Get("piplus"))};
+  std::shared_ptr<TH2D> hpionpos_cut{(TH2D*) cutTH2(hpionpos, (TCutG*) fCuts->Get("piplus"))}; // Set graphic cuts for pions.
   hpionpos_cut->Rebin2D(10, 1);
-  TF1 fit_pionpos("fit_pionpos", "gaus", ymin, ymax);
-  fit_pionpos.SetParNames("p0", "p1", "p2");
+  TF1 fit_pionpos("fit_pionpos", "gaus", ymin, ymax); // Fit pions yield as a function of m2 in a certain momentum p range with a gaussian function.
+  fit_pionpos.SetParNames("p0", "p1", "p2"); // p0 - height in a maximum, p1 - mean value, p2 - sigma.
   fit_pionpos.SetParLimits(0, 0., 4.e6);
   fit_pionpos.SetParLimits(1, -.25, 0.03);
   fit_pionpos.SetParLimits(2, 0., 0.7);
-  TF1 pionpos_0("pionpos_0", "0", xmin, xmax);
-  TF1 pionpos_1("pionpos_1", "pol9", xmin, xmax);
-  TF1 pionpos_2("pionpos_2", "pol9", xmin, xmax);
+  TF1 pionpos_0("pionpos_0", "0", xmin, xmax); // "0" means do not fit the p0 as a function of momentum p, just remeber all the values.
+  TF1 pionpos_1("pionpos_1", "pol9", xmin, xmax); // Fit p1 as a function of momentum p with 9-th order polynomial.
+  TF1 pionpos_2("pionpos_2", "pol9", xmin, xmax); // Fit p2 as a function of momentum p with 9-th order polynomial.
 
   Pid::ParticleFit pionpos(PidParticles::kPionPos);
   pionpos.SetParametrization({pionpos_0, pionpos_1, pionpos_2});
@@ -68,7 +74,9 @@ void run_pid_dcm12() {
   tof.Fit();
   pionpos = tof.GetParticle(0);
   tof.Clear();
+  // End of fit of positively charged pions
 
+  // Fit positively charged kaons
   std::cout << "\n\nkaonpos\n";
   xmin = 0.4, xmax = 10.5, ymin = -2., ymax = 2.;
   tof.SetChi2Max(1000);
@@ -98,7 +106,9 @@ void run_pid_dcm12() {
   tof.Fit();
   kaonpos = tof.GetParticle(0);
   tof.Clear();
+  // End of fit of positively charged kaons
 
+  // Fit of protons
   std::cout << "\n\nproton\n";
   xmin = 0.4, xmax = 20., ymin = -6., ymax = 6.;
   tof.SetChi2Max(2000);
@@ -128,7 +138,9 @@ void run_pid_dcm12() {
   tof.Fit();
   proton = tof.GetParticle(0);
   tof.Clear();
+  // End of fit of protons
 
+  // Fit of He-3 (not executed in this example, but can be uncommented)
   //  std::cout << "\n\nhe3\n";
   //  std::unique_ptr <TH2D> hhe3 {(TH2D*) fIn->Get("reco_vs_sim_info_via_vtx/h2TofM2_He3")};
   //  std::unique_ptr <TH2D> hhe3_cut {(TH2D*) cutTH2 (hhe3, (TCutG*) fCuts->Get("he3"))};
@@ -157,8 +169,9 @@ void run_pid_dcm12() {
   //  tof.Fit();
   //  he3 = tof.GetParticle(0);
   //  tof.Clear();
-  //
-  //
+  // End of fit of He-3 (not executed in this example, but can be uncommented)
+
+  // Fit of deuterons (not executed in this example, but can be uncommented)
   //  std::cout << "\n\ndeutron\n";
   //  xmin = 1.3, xmax = 20., ymin = -3., ymax = 6.;
   //  tof.SetChi2Max(1000);
@@ -188,13 +201,18 @@ void run_pid_dcm12() {
   //  tof.Fit();
   //  deutron = tof.GetParticle(0);
   //  tof.Clear();
+  // End of fit of deuterons (not executed in this example, but can be uncommented)
 
+  // Here we finished fitting of MC-true distributions fitting and can switch to reconstructed data fitting, using
+  // the estimations done in the previous MC-true fitting.
+
+  // Configure fit of background in the positively charged particles side
   std::cout << "\n\nbgpos\n";
   xmin = 0.3, xmax = 20., ymin = -3., ymax = 3.;
   Pid::ParticleFit bgpos(PidParticles::kBgPos);
-  TF1 bgpos_fit("fit_bgpos", "pol2", ymin, ymax);
-  bgpos_fit.SetParNames("p15", "p16", "p17");
-  TF1 bgpos_0("bgpos_0", "pol3", xmin, xmax);
+  TF1 bgpos_fit("fit_bgpos", "pol2", ymin, ymax); // Fit BG as a function of m2 in a certain momentum p range with a second order polynomial
+  bgpos_fit.SetParNames("p15", "p16", "p17"); // p15 is a free term, p16 - a linear term, p17 - a square term
+  TF1 bgpos_0("bgpos_0", "pol3", xmin, xmax); // Fit p15, p16, p17 as functions of momentum p with a third order polynomial
   TF1 bgpos_1("bgpos_1", "pol3", xmin, xmax);
   TF1 bgpos_2("bgpos_2", "pol3", xmin, xmax);
 
@@ -202,12 +220,17 @@ void run_pid_dcm12() {
   bgpos.SetFitFunction(bgpos_fit);
   bgpos.SetRange(xmin, xmax);
   bgpos.SetIsFitted();
+  // End of configure fit of background in the positively charged particles side
 
   std::cout << "\n\nallpos\n";
   xmin = 0.3, xmax = 20., ymin = -6., ymax = 6.;
-  std::unique_ptr<TH2D> hpos{(TH2D*) fIn->Get("reco_info/h2TofM2")};
+  std::unique_ptr<TH2D> hpos{(TH2D*) fIn->Get("reco_info/h2TofM2")}; // Set the input histogram
   hpos->Rebin2D(10, 1);
   tof.SetChi2Max(10000);
+
+  // For pions, kaons and protons we fix the second and the third argument - i.e. mean value of gaussian and its width,
+  // and we get these values from the previously done MC-fitting. The first argument - the height of the gaussian
+  // (which is proportional to the yield of particles) - is a free parameter of fitting of the reconstructed histogram.
   pionpos.SetIsFixed({false, true, true});
   kaonpos.SetIsFixed({false, true, true});
   proton.SetIsFixed({false, true, true});
@@ -234,7 +257,10 @@ void run_pid_dcm12() {
   getter.AddParticle(tof.GetParticleSpecie(PidParticles::kBgPos), PidParticles::kBgPos);
 
   tof.Clear();
+  // Fit of positively charged particles is finished.
 
+  // Fit of negatively cherged particles (done in a similar way to the positive ones, except of absense of
+  // antiprotons, anti-deuterons and anti-He3).
   std::cout << "\n\npionneg\n";
   xmin = -12., xmax = -0.25, ymin = -2., ymax = 2.;
   tof.SetChi2Max(10000);
@@ -335,6 +361,8 @@ void run_pid_dcm12() {
   getter.AddParticle(tof.GetParticleSpecie(PidParticles::kBgNeg), PidParticles::kBgNeg);
 
   tof.Clear();
+
+  // Fit of negatively charged particles finished.
 
   std::unique_ptr<TFile> outfile{TFile::Open("pid_getter.root", "recreate")};
   getter.Write("pid_getter");
