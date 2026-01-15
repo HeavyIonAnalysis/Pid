@@ -1,6 +1,6 @@
-#include "Getter.h"
+#include "GetterTof.h"
 
-ClassImp(Pid::Getter)
+ClassImp(Pid::GetterTof)
     ClassImp(Pid::CutGGetter)
 
         namespace Pid {
@@ -11,7 +11,7 @@ ClassImp(Pid::Getter)
 * @param m2 square mass for TOF (or y-axis value, in general)
 * @return map with probabilities for all particle species
 */
-  std::map<int, double> Getter::GetBayesianProbability(double p, double m2) {
+  std::map<int, double> GetterTof::GetBayesianProbability(double p, double m2) {
     std::map<int, double> prob{};
 
     //  if (p > maxx_ || p < minx_)  //NOTE should be done in cuts maybe?

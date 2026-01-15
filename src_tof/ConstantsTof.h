@@ -1,15 +1,15 @@
-/** @file   Constants.h
+/** @file   ConstantsTof.h
     @author Viktor Klochkov (klochkov44@gmail.com)
     @author Ilya Selyuzhenkov (ilya.selyuzhenkov@gmail.com)
     @brief  Some constants and enumerators
 */
 
-#ifndef PidConstants_H
-#define PidConstants_H 1
+#ifndef PidConstantsTof_H
+#define PidConstantsTof_H 1
 
 #include <unordered_map>
 
-namespace PidParticles {
+namespace PidTofParticles {
 enum eParticle {
   kBgPos = 1,
   kBgNeg = -1,
@@ -38,7 +38,7 @@ const std::unordered_map<int, float> masses =
         {kHe3, 2.793},
         {kHe4, 3.724},
 };
-}// namespace PidParticles
+}// namespace PidTofParticles
 
 namespace PidFunction {
 enum eNames {

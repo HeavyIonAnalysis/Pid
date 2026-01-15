@@ -1,8 +1,8 @@
-/** @file   Container.h
-    @class  Pid::Container
+/** @file   ContainerTof.h
+    @class  PidTof::Container
     @author Viktor Klochkov (klochkov44@gmail.com)
     @author Ilya Selyuzhenkov (ilya.selyuzhenkov@gmail.com)
-    @brief  Class to store PID information
+    @brief  Class to store Tof PID information
 */
 
 #ifndef CENTRALITY_CONTAINER_H
@@ -12,9 +12,9 @@
 
 typedef unsigned int uint;
 
-namespace Pid {
+namespace PidTof {
 
-class Container {
+class ContainerTof {
 
  public:
   Container() = default;
@@ -38,6 +38,6 @@ class Container {
 
   //     ClassDef(Container, 1);
 };
-}// namespace Pid
+}// namespace PidTof
 
 #endif//CENTRALITY_CONTAINER_H

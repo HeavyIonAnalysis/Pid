@@ -88,7 +88,7 @@ Pid::ParticleFit FitPionsPos(Pid::Fitter& tof, const std::shared_ptr<TH2D>& hist
   pions.xmax = 10.5;
   pions.ymin = -2.;
   pions.ymax = 2.;
-  pions.pid = PidParticles::kPionPos;
+  pions.pid = PidTofParticles::kPionPos;
   pions.name = "piplus";
 
   return FitParticle(tof, pions, hist);

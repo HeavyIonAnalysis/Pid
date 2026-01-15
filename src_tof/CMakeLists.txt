@@ -2,11 +2,11 @@ set(SOURCES
         Fitter.cpp
         ParticleFit.cpp
         Parameters.cpp
-        Getter.cpp
+        GetterTof.cpp
         )
 
 string(REPLACE ".cpp" ".h" HEADERS "${SOURCES}")
-list(APPEND HEADERS Constants.h)
+list(APPEND HEADERS ConstantsTof.h)
 
 set(DICT_FILE_NAME G__${PROJECT_NAME})
 set(PCM_FILE_NAME lib${PROJECT_NAME})
@@ -27,7 +27,7 @@ endforeach ()
 
 target_link_libraries(Pid ${ROOT_LIBRARIES})
 target_include_directories(Pid
-        PRIVATE ${CMAKE_SOURCE_DIR}/src
+        PRIVATE ${CMAKE_SOURCE_DIR}/src_tof
         PUBLIC
         $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/include/pid>
         $<INSTALL_INTERFACE:include/pid>

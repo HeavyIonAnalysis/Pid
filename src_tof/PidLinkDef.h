@@ -7,7 +7,7 @@
 #pragma link C++ class Pid::Fitter + ;
 #pragma link C++ class Pid::ParticleFit + ;
 #pragma link C++ class Pid::BaseGetter--;
-#pragma link C++ class Pid::Getter + ;
+#pragma link C++ class Pid::GetterTof + ;
 #pragma link C++ class Pid::CutGGetter + ;
 
 #endif

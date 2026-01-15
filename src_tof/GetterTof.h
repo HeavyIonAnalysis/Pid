@@ -1,12 +1,12 @@
-/** @file   Getter.h
-    @class  Pid::Getter
+/** @file   GetterTof.h
+    @class  Pid::GetterTof
     @author Viktor Klochkov (klochkov44@gmail.com)
     @author Ilya Selyuzhenkov (ilya.selyuzhenkov@gmail.com)
-    @brief  Class to calculate PID probabilities
+    @brief  Class to calculate Tof-PID probabilities
 */
 
-#ifndef PidGetter_H
-#define PidGetter_H 1
+#ifndef PidGetterTof_H
+#define PidGetterTof_H 1
 
 #include "ParticleFit.h"
 #include "TObject.h"
@@ -37,7 +37,7 @@ class BaseGetter {
 /**
  * @brief Bayesian Pid getter
  */
-class Getter : public TObject, public BaseGetter {
+class GetterTof : public TObject, public BaseGetter {
  public:
   void AddParticle(const ParticleFit& particle, uint id) { species_[id] = particle; }
   void AddParticles(std::map<int, ParticleFit>&& species) { species_ = species; }
@@ -85,7 +85,7 @@ class Getter : public TObject, public BaseGetter {
   double minx_{-100000.};
   double maxx_{100000.};
 
-  ClassDefOverride(Getter, 1);
+  ClassDefOverride(GetterTof, 1);
 };
 
 /**
@@ -168,4 +168,4 @@ class CutGGetter : public TObject, public BaseGetter {
 };
 
 }// namespace Pid
-#endif// PidGetter_H
+#endif// PidGetterTof_H
